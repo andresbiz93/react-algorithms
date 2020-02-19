@@ -1,3 +1,4 @@
+/* Want to take up whole screen. Need this so child components know screen size */
 html, body{
     height:100%;
     width:100%;
@@ -5,14 +6,15 @@ html, body{
     padding:0;
 }
 
+/* App Background */
 #wrapper{
-    /*background-color:darkgray;*/
     background-image: radial-gradient(darkgray, black);
     height:100%;
     width: 100%;
     padding: 5%;
 }
 
+/* Interactive area background */
 #app{
     background-color:#f0f0f0;
     height: 100%;
@@ -21,6 +23,7 @@ html, body{
     overflow: auto;
 }
 
+/* Contains all of the bar elements to be sorted */
 #list_container{
     height: 50%;
     width: 100%;
@@ -30,6 +33,7 @@ html, body{
     display:inline-block;
 }
 
+/* Each element to be sorted is a bar */
 .bar{
     vertical-align: bottom;
     height:50px;
@@ -39,10 +43,12 @@ html, body{
     margin:5px;
 }
 
+/* Each bar is initialized to blue color */
 .blue{
     background-color:blue;
 }
 
+/* Lower half of the app containing all of the options */
 #options{
     height: 50%;
     width: 100%;
@@ -55,6 +61,7 @@ html, body{
     vertical-align: top;
 }
 
+/* First third of the options div - contains the slider */
 #slider{
     height: 100%;
     width: 33%;
@@ -68,12 +75,14 @@ html, body{
     border-radius:5px;
 }
 
+/* Modifying the slider to display vertically */
 #range{
     -webkit-appearance: none;
     -webkit-appearance: slider-vertical;
     height:70%;
 }
 
+/* Second third of the options div - contains the sort buttons */
 #sorts{
     height: 100%;
     width: 34%;
@@ -90,10 +99,12 @@ html, body{
     display:block;
 }
 
+/* A simple background color wasn't working, so went with a gradient with a constant color (?) */
 #sorts .selected{
     background-image: radial-gradient(lightgreen, lightgreen);
 }
 
+/* Last third of the options divs, contains the animation speed radio buttons */
 #radio{
     margin:0px;
     height: 100%;

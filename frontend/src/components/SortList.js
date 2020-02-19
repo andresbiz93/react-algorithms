@@ -1,16 +1,8 @@
 import React, { Component } from 'react';
-import SortMember from './SortMember';
-import bubbleSort from './../sorts/bubbleSort';
-//import key from "weak-key";
+
+//Could've done this without a SortList component
 
 class SortList extends Component{
-
-    /*state = {
-        members : [],
-        states : [],
-        number : 10,
-        sorted : false
-    }*/
 
     render(){
 

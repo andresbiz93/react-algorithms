@@ -13,6 +13,9 @@ class App extends Component{
 
     constructor(props){
         super(props);
+        
+        // Initial state has no members, 10 members to be rendered in ComponentDidMount()
+
         this.state = {
             members : [],
             frames : [],
@@ -20,6 +23,7 @@ class App extends Component{
             animate : false,
             speed : "medium",
             options_disabled : false,
+            //Button classes will later be modified to change its appearance when selected
             button_classes : ["sort_button", "sort_button", "sort_button", "sort_button", "sort_button"]
         }
 
@@ -28,23 +32,28 @@ class App extends Component{
     componentDidMount(){
         this.setState((state) => {
 
-            //console.log("DID MOUNT STATE", state);
+            //Initializing the element bars
 
             let className = "blue bar";
             let animation = "";
             let out_members = [];
             let out_frames = [];
     
+            //Will initialize enough members to match the default value
             for(var i = state.members.length; i < state.number; i++){
-    
+
+                //Want to generate a random height
                 let height = Math.floor(Math.random() * 190 + 10);
+
+                //Width is constant - important factor for animations
                 let width = 10;
+
                 let style = {height : height, width : width}
                 let new_member = this.renderMember(className, style, i, animation);
     
                 out_members.push(new_member);
-                //console.log("OUT VARS", "MEMBERS", out_members, "FRAMES", out_frames);
             }
+            //Initial frame will be the initial state of the members
             out_frames.push(out_members);
     
             return {members : out_members, frames : out_frames};
@@ -54,6 +63,7 @@ class App extends Component{
 
     
     renderMember(className, style, keyNum, animations){
+        //Passing props down to each member
         return (
             <SortMember
                 class = {className}
@@ -65,6 +75,8 @@ class App extends Component{
     }
 
     shuffle(){
+        //Using the Fisher-Yates shuffling algorithm
+        //First disable options, passing the button id to render it as selected
         this.disableOptions(0);
         this.setState(
             (state) => {
@@ -72,6 +84,8 @@ class App extends Component{
                 let frames = [];
                 frames.push([...members]);
 
+                //Shuffle occurs in place
+                //shuffle returns an array of arrays, where each inner array contains all members and represents a step in the sort
                 shuffle(members, frames);
 
                 return {frames : frames, animate : true};
@@ -82,12 +96,12 @@ class App extends Component{
 
 
     bSort(){
+        //First we disable options and pass the selected button's id to render it as selected
         this.disableOptions(1);
         this.setState(
             state => {
-                //console.log("PRE BSORT STATE", state)
                 let current_members = [...state.members];
-                //console.log("members pre BSORT", current_members);
+                //sort returns an array of arrays, where each inner array contains all members and represents a step in the sort
                 let updated_frames = bubbleSort(current_members);
                 return {frames: updated_frames, animate : true};
             },
@@ -96,10 +110,12 @@ class App extends Component{
     }
 
     sSort(){
+        //First we disable options and pass the selected button's id to render it as selected
         this.disableOptions(2);
         this.setState(
             state => {
                 let current_members = [...state.members];
+                //sort returns an array of arrays, where each inner array contains all members and represents a step in the sort
                 let updated_frames  = selectionSort(current_members);
                 return {frames : updated_frames, animate : true};
             },
@@ -108,10 +124,12 @@ class App extends Component{
     }
 
     iSort(){
+        //First we disable options and pass the selected button's id to render it as selected
         this.disableOptions(3);
         this.setState(
             state => {
                 let current_members = [...state.members];
+                //sort returns an array of arrays, where each inner array contains all members and represents a step in the sort
                 let updated_frames = insertionSort(current_members);
                 return {frames : updated_frames, animate : true};
             },
@@ -120,6 +138,7 @@ class App extends Component{
     }
 
     mSort(){
+        //First we disable options and pass the selected button's id to render it as selected
         this.disableOptions(4);
         this.setState(
             state => {
@@ -127,9 +146,10 @@ class App extends Component{
                 let current_frames = [];
                 current_frames.push([...current_members]);
 
+                //sort returns an array of arrays, where each inner array contains all members and represents a step in the sort
+                //want to pass frames as an independent variable so that we can keep track of frames as recursion plays out
                 mergeSort(current_members, current_frames);
 
-                //console.log("RESULT\n", "FRAMES", current_frames, "MEMBERS", current_members);
 
                 return {frames : current_frames, animate : true};
             },
@@ -142,13 +162,10 @@ class App extends Component{
     animate(){
         if (this.state.animate){
             this.setState((state) => {
-                //console.log("STATE IN ANIMATE", state);
 
+
+                //We render the first snapshot in the frames list
                 let frames = [...state.frames];
-    
-                /*for(var i = 0 ; i < frames.length; i++){
-                    console.log("FRAMES I", i, frames[i]);
-                }*/
                 return {members : frames[0]}; 
     
             }, 
@@ -159,8 +176,10 @@ class App extends Component{
     stop(){
         this.setState(
             state => {
+                //If stopping, want to set current members to whatever the state was at the moment in the animation
                 let new_members = state.members;
                 for(var i = 0; i < new_members.length; i++){
+                    //Want to change all of their colors to blue if they aren't already
                     if(new_members[i].props.style.backgroundColor != "blue"){
                         let x = React.cloneElement(
                             new_members[i],
@@ -177,10 +196,13 @@ class App extends Component{
     }
 
     setNextFrame(){
+        //If there's only one frame, the sort will be done animating
         if(this.state.frames.length == 1){
             this.enableOptions();
         }
         let speed = null;
+        
+        //Setting speed based on state variable
         if(this.state.speed == "slow"){
             speed = 500;
         }
@@ -196,6 +218,7 @@ class App extends Component{
                 if(state.frames.length == 1){
                     return{animate : false};
                 }
+                //If there's more than 1 frame left, we want to shave off the first frame in the list. This will continue the loop until the animation is done.
                 else{
                     let new_frames = state.frames.splice(1);
                     return {frames : new_frames}
@@ -206,6 +229,7 @@ class App extends Component{
     }
 
     handleChangeNumber = e =>{
+        //Want to render new members or remove previous ones depending on how the value changed
         let members = this.state.members;
         let limit = e.target.value;
 
@@ -216,6 +240,7 @@ class App extends Component{
             limit = 50;
         }
 
+        //If rendering new members, want to ensure that we're creating keys that are not duplicates - so we start from the max key value
         let max_key = 0;
         for(var x = 0; x < members.length; x++){
             if(members[x].key > max_key){
@@ -223,15 +248,16 @@ class App extends Component{
             }
         }
 
+        //No change was made - shouldn't be possible?
         if(members.length == limit){
-            //console.log("MEMBERS", this.state.members);
             this.setState({number : limit});
         }
+        //Number decreased, need to shave members off the list
         else if(members.length > limit){
             members = members.slice(0, limit);
-            //console.log("MEMBERS", members);
             this.setState({number : limit, members: members});
         }
+        //Number increased, adding members in the same fashion as DidComponentMount()
         else if(members.length < limit){
             let className = "blue bar";
             let animation = "";
@@ -241,22 +267,24 @@ class App extends Component{
                 let height = Math.floor(Math.random() * 190 + 10);
                 let width = 10;
                 let style = {height : height, width : width}
+
+                //Adding the max_key to i so as to avoid duplicate keys
                 let new_member = this.renderMember(className, style, i + max_key, animation);
     
                 members.push(new_member);
             }
 
             this.setState({number : limit, members: members});
-            //console.log("MEMBERS", this.state.members);
         }
     }
 
     handleChangeSpeed = e => {
-        //console.log("RADIO VALUE", e.target.value);
+        //Store the new selected value in state
         this.setState({speed : e.target.value});
     }
 
     disableOptions(num){
+        //Want to disable sort buttons and slider from being selected and render the selected sort as green
         this.setState(state => {
             let buttons = state.button_classes;
             buttons[num] = "sort_button selected";
@@ -265,6 +293,7 @@ class App extends Component{
     }
 
     enableOptions(){
+        //Want to enable all options and render all buttons normally
         this.setState(state => {
             let buttons = ["sort_button", "sort_button", "sort_button", "sort_button", "sort_button"];
             return {options_disabled : false, button_classes : buttons};
